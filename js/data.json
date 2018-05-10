@@ -1,0 +1,26 @@
+{
+	"AngularJS": {
+		"path": "/angularjs",
+		"description": "AngularJS Apps",
+		"url": "http://angulardev.local",
+		"icon": "assets/images/angularjs.png"
+	},
+	"HTML_CSS": {
+		"path": "/html_css",
+		"description": "HTML and CSS Apps",
+		"url": "http://htmldev.local",
+		"icon": "assets/images/html.png"
+	},
+	"PHP": {
+		"path": "/php",
+		"description": "PHP Apps",
+		"url": "http://phpdev.local",
+		"icon": "assets/images/php.png"
+	},
+	"Javascript": {
+		"path": "/javascript",
+		"description": "Vanilla JS Apps",
+		"url": "http://jsdev.local",
+		"icon": "assets/images/javascript.png"
+	}
+}

@@ -1,0 +1,45 @@
+<!-- bootstrap accordion -->
+<div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <div class="panel-heading" id="headingOne">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          Collapsible Group Item #1
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel">
+      <div class="panel-body">
+        Anim pariatur cliche
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- panels with listed items and linked headers -->
+<a href="<?php echo $values['url']; ?>" class="list-group-item list-group-item-info" target="_blank">
+  <div>
+    <h4 class="list-group-item-heading"><?php echo $project; ?></h4>
+    <p class="list-group-item-text"><?php echo $values['path']; ?></p>          
+  
+  </div>              
+
+</a>
+
+<!-- Bootstrap panel with controls in header -->
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading clearfix">
+            <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Panel header</h4>
+                <div class="input-group">                    
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary pull-right"><i class="glyphicon glyphicon-search"></i></button>
+                        <button class="btn btn-primary pull-right"><i class="glyphicon glyphicon-wrench"></i></button>
+                    </div>
+                </div>
+        </div>
+        <div class="panel-body">
+            Panel content
+        </div>
+    </div>
+</div>
