@@ -1,8 +1,12 @@
 <?php 
 	
-	//session_start();
+	session_start();
 
+	include_once('config.php');
 	include_once('functions.php');
+
+	//create needed directories
+	createNeededDirs(['./assets']);
 
 	if (isset($_POST['rebuild']) && ($_POST['rebuild'] == 'yes')) {
 		updateJsonFile(JSON_FILE);
@@ -13,14 +17,19 @@
 		echo "json file not found";		
 		updateJsonFile(JSON_FILE);
 	}
-
-	//set maxRows and maxColumns
-	$maxRows = 5;
-	$maxColumns = 2;
+	
 
 	//build links to each app directory from json file
-	//get directories list
-	$projDirs = getJsonDir(JSON_FILE);
+	
+	//store array of projects and subprojects as SESSION variable
+	if (!(isset($_SESSION['projectsArray']))) {
+		
+		//get project directories from JSON file	
+		$_SESSION['projectsArray'] = getJsonDir(JSON_FILE);
+	}
+	
+	$projDirs = $_SESSION['projectsArray'];
+	
 
 	//beside each link incude button for copying folder path to clipboard for editors
 
@@ -58,7 +67,7 @@
 			
 			<div class="row">				
 				<div class="col-md-6 col-md-offset-3">
-					<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+					<form method="post" action="<?php echo URI_PATH; ?>">
 						<h1><?php echo $pageHeader; ?> <span id="refresh"><button>Refresh Dirs</button></span></h1>	
 						<input type="hidden" name="rebuild" value="yes">
 					</form>
@@ -80,15 +89,16 @@
 					$numItems = count($projDirs);
 										
 				?>
-				<div class="panel-group" id="accordion"> <!-- start accordion -->
+				
 					<div class="col-md-6 col-md-offset-3"> <!--begin column -->
-						<div class="panel panel-info"> <!--begin column panel -->						
+						<div class="panel panel-info" id="accpanel"> <!--begin column panel -->						
 								<div class="panel-body"> <!-- column panel body -->
+								<div class="panel-group" id="accordion"> <!-- start accordion -->
 								<?php foreach ($projDirs as $project => $values) : ?>
 									<?php	
-										/*
-										$count += 1; 
 										
+										$count += 1; 
+										/*
 										if ($rowCount == 0) { //if 1st row or rows complete wrap to next col
 											$colCount += 1;
 											if ($colCount > $maxColumns) {
@@ -105,23 +115,33 @@
 									    	<div class="panel-heading">
 										      <h4 class="panel-title">
 										        <a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $count; ?>">
-										          <?php echo $project; ?>
+										          <?php 
+										          	echo $project;									          	
+										          ?>
 										        </a>
 										      </h4>
 									    	</div>
 									    	<div id="collapse<?php echo $count; ?>" class="panel-collapse collapse">
 									      	<div class="panel-body">
-									        		<p class="list-group-item-text"><?php echo $values['path']; ?></p>
+									      		<?php 
+									      			$target = '';
+									      			if ($values['url']!='#') {
+										      			$target = ' target="_blank"';
+										      		} 
+									      		?>
+									        		<p><?php echo $values['path']; ?></p>
+									        		<a class="list-group-item-text" href="<?php echo $values['url']; ?>" <?php echo $target; ?>><?php echo $values['url']; ?></a>
 									      	</div>
 									    	</div>
 									  	</div>					
 								  		
 									
 								<?php endforeach; ?>
+								</div> <!-- end accordion -->	
 							</div> <!-- end column panel body -->
 						</div> <!-- end column panel -->
 					</div> <!-- end column -->
-				</div> <!-- end accordion -->	
+				
 							
 
 						

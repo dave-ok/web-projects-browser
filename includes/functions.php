@@ -1,23 +1,16 @@
-<?php
-	//error_reporting(E_ALL);
-	//ini_set('display_errors', 1);
+<?php	
+	function createNeededDirs($dirsNeeded)
+	{
+		//create directories that we need		
+		$lenDirs = count($dirsNeeded);
 
-	define('CURR_DIR', getcwd());
-	//echo CURR_DIR;
-	define('JSON_FILE', CURR_DIR . '/assets/data.json');
-	define('URI_PATH', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-
-	//header('Vary: Origin');
-
-	//create directories that we need
-	$dirsNeeded = ['./assets'];
-	$lenDirs = count($dirsNeeded);
-
-	for ($i=0; $i < $lenDirs; $i++) { 
-		if (!file_exists($dirsNeeded[$i]) && !is_dir($dirsNeeded[$i])) {
-	   	mkdir($dirsNeeded[$i]);         
-		} 	
+		for ($i=0; $i < $lenDirs; $i++) { 
+			if (!file_exists($dirsNeeded[$i]) && !is_dir($dirsNeeded[$i])) {
+		   	mkdir($dirsNeeded[$i]);         
+			} 	
+		}	
 	}
+	
 
 	
 	
@@ -89,7 +82,7 @@
 
 	}
 
-	function getDirList($currDir = CURR_DIR, $maxDepth = 2, $setModifiedTimes = false, $currDepth = 0, $parent = '')
+	function getDirList($currDir = CURR_DIR, $maxDepth = 2, $setModifiedTimes = false, $currDepth = 0, $parent = '', $parentPath = URI_PATH)
 	{				
 
 		//update current depth
@@ -110,6 +103,8 @@
 		 	if (is_dir($dirPath)) {			 		
 
 		 		//in each directory look for index.html or index.php
+		 		$url = $parentPath . $fname . '/';
+		 		
 		 		if (file_exists($baseName . 'php') || file_exists($baseName . 'html')) 
 		 		//if found stop looking
 		 		{		 			
@@ -119,11 +114,12 @@
 
 		 			$dirList[$fname]['path'] =  $winDir . $fname;
 
-		 			//echo $dirList[$fname]['path'] . '<br>';
-
-		 			$dirList[$fname]['url'] = URI_PATH . $fname;
+		 			//echo $dirList[$fname]['path'] . '<br>';		 				 			
+		 			
+		 			$dirList[$fname]['url'] = $url;
 		 			$dirList[$fname]['depth'] = $currDepth;
 		 			$dirList[$fname]['parent'] = $parent;
+		 			 
 
 		 			if ($currDepth > 1) 
 		 			{
@@ -141,9 +137,9 @@
 		 			//if no index file found and going deeper is allowed		 			
 		 			if ($currDepth < $maxDepth) {
 		 						 				
-		 				$returnedList = getDirList($dirPath, $maxDepth, $setModifiedTimes, $currDepth, $fname);
+		 				$returnedList = getDirList($dirPath, $maxDepth, $setModifiedTimes, $currDepth, $fname, $url);
 
-		 				//if the returned array is not empty add parent to dirList
+		 				//if the returned array is not empty, it is a parent. Add to dirList
 		 				if (!(empty($returnedList))) {		 					
 
 		 					if ($currDepth > 1) 
@@ -200,6 +196,9 @@
 		$jsonDir = json_encode($dirArray, JSON_FORCE_OBJECT);
 
 		if ($jsonDir) {
+			if (file_exists($fname)) {
+				unlink($fname);
+			}
 			file_put_contents($fname, $jsonDir);
 			return true; //encoding success and file created
 		}
@@ -241,6 +240,9 @@
 
 		//build json file from $updJsonArray 
 		$success = buildJsonFile($updjsonarray, $fname);
+
+		//clear session variable containing projects array since we just rebuilt JSON FILE
+		unset($_SESSION['projectsArray']);
 
 		return $success;
 
