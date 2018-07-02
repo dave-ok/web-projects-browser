@@ -1,4 +1,4 @@
-<!-- bootstrap accordion -->
+bootstrap accordion -->
 <div class="panel-group" id="accordion">
   <div class="panel panel-default">
     <div class="panel-heading" id="headingOne">
@@ -43,3 +43,46 @@
         </div>
     </div>
 </div>
+
+<!-- working accordion -->
+<div class="col-md-6 col-md-offset-3"> <!--begin column -->
+          <div class="panel panel-info" id="accpanel"> <!--begin column panel -->           
+              <div class="panel-body"> <!-- column panel body -->
+              <div class="panel-group" id="accordion"> <!-- start accordion -->
+              <?php foreach ($projDirs as $project => $values) : ?>
+                <?php 
+                  
+                  $count += 1; 
+                  
+                ?>            
+                  <!-- create panel item -->
+                  <div class="panel panel-info">
+                      <div class="panel-heading">
+                        <h4 class="panel-title">
+                          <a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $count; ?>">
+                            <?php 
+                              echo $project;                              
+                            ?>
+                          </a>
+                        </h4>
+                      </div>
+                      <div id="collapse<?php echo $count; ?>" class="panel-collapse collapse">
+                        <div class="panel-body">
+                          <?php 
+                            $target = '';
+                            if ($values['url']!='#') {
+                              $target = ' target="_blank"';
+                            } 
+                          ?>
+                            <p><?php echo $values['path']; ?></p>
+                            <a class="list-group-item-text" href="<?php echo $values['url']; ?>" <?php echo $target; ?>><?php echo $values['url']; ?></a>
+                        </div>
+                      </div>
+                    </div>          
+                    
+                
+              <?php endforeach; ?>
+              </div> <!-- end accordion --> 
+            </div> <!-- end column panel body -->
+          </div> <!-- end column panel -->
+        </div> <!-- end column

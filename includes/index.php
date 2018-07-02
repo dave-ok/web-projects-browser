@@ -2,19 +2,24 @@
 	
 	session_start();
 
+	//error_reporting(E_ALL);
+
 	include_once('config.php');
 	include_once('functions.php');
+	include_once('partials/accordion.php');
 
+	
 	//create needed directories
 	createNeededDirs(['./assets']);
 
 	if (isset($_POST['rebuild']) && ($_POST['rebuild'] == 'yes')) {
 		updateJsonFile(JSON_FILE);
-		$_POST['rebuild'] = '';
+		unset($_POST['rebuild']);
+		header('location: '. URI_BASE); //redirect to stop page refresh messages
 	}
 	//if the json file does not exist create and populate it
 	if (!(file_exists(JSON_FILE))) {		
-		echo "json file not found";		
+		//echo "json file not found";		
 		updateJsonFile(JSON_FILE);
 	}
 	
@@ -28,7 +33,17 @@
 		$_SESSION['projectsArray'] = getJsonDir(JSON_FILE);
 	}
 	
-	$projDirs = $_SESSION['projectsArray'];
+	$projectsArray = $_SESSION['projectsArray'];
+
+	//decode route
+	$projDirs = decodeRoute();
+
+	/* if (!($projDirs)) {
+		include_once('404/index.php');
+		exit;
+	} */
+
+	
 	
 
 	//beside each link incude button for copying folder path to clipboard for editors
@@ -67,7 +82,7 @@
 			
 			<div class="row">				
 				<div class="col-md-6 col-md-offset-3">
-					<form method="post" action="<?php echo URI_PATH; ?>">
+					<form method="post" action="<?php echo URI_BASE; ?>">
 						<h1><?php echo $pageHeader; ?> <span id="refresh"><button>Refresh Dirs</button></span></h1>	
 						<input type="hidden" name="rebuild" value="yes">
 					</form>
@@ -77,75 +92,37 @@
 				</div>
 			</div>
 			<div class="row">
-				<?php
-					//if number items in array is < 4 use one column
-					//else use two
-				?>							
+			 					
 				<?php 
-					$count = 0; 
-					$colCount = 0;
-					$rowCount = 0;
+					//get number of columns
+					if (!empty($projDirs)) {
+						$chkProjects = array_chunk($projDirs, MAX_ROWS, true);
 
-					$numItems = count($projDirs);
-										
-				?>
-				
-					<div class="col-md-6 col-md-offset-3"> <!--begin column -->
-						<div class="panel panel-info" id="accpanel"> <!--begin column panel -->						
-								<div class="panel-body"> <!-- column panel body -->
-								<div class="panel-group" id="accordion"> <!-- start accordion -->
-								<?php foreach ($projDirs as $project => $values) : ?>
-									<?php	
-										
-										$count += 1; 
-										/*
-										if ($rowCount == 0) { //if 1st row or rows complete wrap to next col
-											$colCount += 1;
-											if ($colCount > $maxColumns) {
-												break; //leave foreach loop
-											}
-											//add new column/accordion							
-										}
-										*/
-										//wrap to next column
-										//if columns(count/maxItemsPerColumn) has reached maxColumns break
-									?>						
-										<!-- create panel item -->
-										<div class="panel panel-info">
-									    	<div class="panel-heading">
-										      <h4 class="panel-title">
-										        <a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $count; ?>">
-										          <?php 
-										          	echo $project;									          	
-										          ?>
-										        </a>
-										      </h4>
-									    	</div>
-									    	<div id="collapse<?php echo $count; ?>" class="panel-collapse collapse">
-									      	<div class="panel-body">
-									      		<?php 
-									      			$target = '';
-									      			if ($values['url']!='#') {
-										      			$target = ' target="_blank"';
-										      		} 
-									      		?>
-									        		<p><?php echo $values['path']; ?></p>
-									        		<a class="list-group-item-text" href="<?php echo $values['url']; ?>" <?php echo $target; ?>><?php echo $values['url']; ?></a>
-									      	</div>
-									    	</div>
-									  	</div>					
-								  		
-									
-								<?php endforeach; ?>
-								</div> <!-- end accordion -->	
-							</div> <!-- end column panel body -->
-						</div> <!-- end column panel -->
-					</div> <!-- end column -->
-				
-							
+						$numcols = count($chkProjects); //use this later for paging
+
+						$cntCols = $numcols > MAX_COLS ? MAX_COLS : $numcols; //temp fix w/out paging
+
+						for ($i=0; $i < $cntCols; $i++) { 
+							$accordion = createAccordion("accordion$i", $chkProjects[$i], $cntCols);
+							echo $accordion;	
+						}	
+					}
+					
+					
+															
+				?>								
 
 						
 			</div> <!-- end row -->
+			<div class="row">				
+				<hr>
+				<div class="text-center">
+					<?php
+						$nav = buildNav($_SESSION['currpage'], MAX_ROWS * MAX_COLS, $_SESSION['totalitems'], $_SESSION['urlbase']);
+						echo $nav;
+					?>			
+				</div>						
+			</div>
 		</div> <!-- end container-fluid -->
 		
 		
