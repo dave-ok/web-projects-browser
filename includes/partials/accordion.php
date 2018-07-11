@@ -60,15 +60,30 @@
    			$target = ' target="_blank"';
    		 
    		}
-   		// panel body
-			$panelItem .= "<div id=\"collapse$id$count\" class=\"panel-collapse collapse\">
-									<div class=\"panel-body\">								      		
-									   <p> $values[path] </p>
-									    <a class=\"list-group-item-text\" href=\"$values[url]\" $target>$values[url]</a>
-									</div>
+   		// panel collapse item
+			$panelItem .= "<div id=\"collapse$id$count\" class=\"panel-collapse collapse\">";
+
+			//panel body
+			$panelItem .= "<div class=\"panel-body\">											   
+								   <a class=\"list-group-item-text proj-link\" href=\"$values[url]\" $target>$values[url]</a>
+								   <a class=\"btn btn-info btn-xs pull-right proj-link\" href=\"$values[url]\"><span class=\"glyphicon glyphicon-new-window\"></span> Go</a>
+									<div class=\"clearfix\"></div>
+									<hr class=\"proj-rule\">
+									<p class=\"proj-description\"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+									</p>
+								</div>";
+			//end panel body
+
+			//panel footer
+			$panelItem .= "<div class=\"panel-footer proj-footer clearfix\">
+									<a class=\"btn btn-warning btn-sm proj-link pull-left\" href=\"#\" title=\"Edit description\"><span class=\"glyphicon glyphicon-edit\"></span> Edit</a>
+									<a class=\"btn btn-primary btn-sm btn-copy pull-right\" href=\"#\" title=\"$values[path]\" data-path=\"$values[path]\" data-toggle=\"tooltip\"><span class=\"glyphicon glyphicon-copy\"></span> Copy</a>
 								</div>";
 
-			
+			//end panel footer
+
+			//end panel collapse item
+			$panelItem .= '</div>';					
 			// end panel item
 			$panelItem .= '</div>';
 

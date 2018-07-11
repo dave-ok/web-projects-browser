@@ -74,6 +74,7 @@
 		<link rel="stylesheet" href="http://appdev.local/assets/css/styles.css">		
 		<script type="text/javascript" src="http://appdev.local/assets/js/jquery.min.js"></script>
 		<script type="text/javascript" src="http://appdev.local/assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="http://appdev.local/assets/js/script.js"></script>
 
 		
 	</head>
