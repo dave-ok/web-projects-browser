@@ -43,3 +43,22 @@ body {
     /* symbol for "collapsed" panels */
     content: "\e080";    /* adjust as needed, taken from bootstrap.css */
 }
+
+.proj-link, .btn-copy {
+  font-family: sans-serif;
+}
+
+.proj-description {
+  font-family: Helvetica;
+}
+
+hr.proj-rule {
+  border-color: grey;
+  margin-top: 6px;
+}
+
+.proj-footer {
+  background-color: #D9ED96;
+}
+
+/* #df87 */
