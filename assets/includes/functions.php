@@ -25,6 +25,13 @@
 		}
 		
 	}
+
+	function findValueInArray($value, $array, $fieldname)
+	{
+		$key = array_search($value, array_column($array, $fieldname));
+		$arrkeys = array_keys($array);
+		return $arrkeys[$key];
+	}
 	
 	
 	function convertPathToWin($filePath)
@@ -36,6 +43,17 @@
 		//append to windows root 'C:\\Dev\\
 		return strtolower($strpath);
 	}	
+
+	function sentenceCase($string) { 
+		$sentences = preg_split('/([.?!]+)/', $string, -1,PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE); 
+		$newString = ''; 
+		foreach ($sentences as $key => $sentence) { 
+		  $newString .= ($key & 1) == 0? 
+		      ucfirst(strtolower(trim($sentence))) : 
+		      $sentence.' '; 
+		} 
+		return trim($newString); 
+	}
 
 	function recursiveDiff() {
      $arrs = func_get_args();
@@ -124,7 +142,7 @@
 
 	}
 
-	function getDirList($currDir = CURR_DIR, $maxDepth = MAX_SUBS_DEPTH, $setModifiedTimes = false, $currDepth = 0, $parent = '', $parentPath = URI_BASE)
+	function getDirList($currDir = CURR_DIR, $maxDepth = MAX_SUBS_DEPTH, $setModifiedTimes = false, $currDepth = 0, $parent = '', $parentPath = URI_BASE, &$dirCount = 0)
 	{				
 
 		//update current depth
@@ -140,6 +158,7 @@
 			
 
 			$dirPath = $currDir . '/' . $fname;
+
 			$baseName =  $dirPath . '/index.';
 
 			if (is_dir($dirPath)) {			 		
@@ -160,6 +179,14 @@
 					//convert linux path to windows path
 					//$fname = strtolower($fname);
 
+					echo $baseName . 'php';
+
+					//to avoid duplicates for subfolders with these names
+					if ($fname == 'www' || $fname == 'server' || $fname == 'public'){
+						$dirCount += 1;
+						$fname = $fname . $dirCount;
+					}
+					
 					$dirList[$fname]['path'] =  $winDir . $fname;
 
 					//echo $dirList[$fname]['path'] . '<br>';		 				 			
@@ -168,12 +195,14 @@
 					$dirList[$fname]['depth'] = $currDepth;
 					$dirList[$fname]['parent'] = $parent;
 					$dirList[$fname]['is_parent'] = false;
+					$dirList[$fname]['id'] = uniqid();
 					 
 
 					if ($currDepth > 1) 
 					{
 						$dirList[$fname]['has_parent'] = true;		 				
 					}
+					
 					else 
 					{
 						$dirList[$fname]['has_parent'] = false;
@@ -186,36 +215,41 @@
 					//if no index file found and going deeper is allowed		 			
 					if ($currDepth < $maxDepth) {
 								 				
-						$returnedList = getDirList($dirPath, $maxDepth, $setModifiedTimes, $currDepth, $fname, $url);
+						$returnedList = getDirList($dirPath, $maxDepth, $setModifiedTimes, $currDepth, $fname, $url, $dirCount);
 
 						//if the returned array is not empty, it is a parent. Add to dirList
 						if (!(empty($returnedList))) {		 					
 
 							if ($currDepth > 1) 
-			 			{
-			 				$dirList[$fname]['has_parent'] = true;		 				
-			 			}
-			 			else 
-			 			{
-			 				$dirList[$fname]['has_parent'] = false;
-			 			}
+				 			{
+				 				$dirList[$fname]['has_parent'] = true;		 				
+				 			}
+				 		
+				 			else 
+				 			{
+				 				$dirList[$fname]['has_parent'] = false;
+				 			}
 
-			 			$dirList[$fname]['path'] =  $winDir . $fname;		 					
+
+				 			$dirList[$fname]['path'] =  $winDir . $fname;		 					
 							$dirList[$fname]['depth'] = $currDepth;
 							$dirList[$fname]['parent'] = $parent;
 							$dirList[$fname]['is_parent'] = true;
 							//$dirList[$fname]['url'] = '#';
 							$dirList[$fname]['url'] = $url;
+							$dirList[$fname]['id'] = uniqid();
 
 							//echo "$url <br>";
+						
 
 							//append the children to dirList
-			 			$dirList = array_merge($dirList, $returnedList);
+			 				$dirList = array_merge($dirList, $returnedList);
+			 			}
 			 		}
 
 
 
-					}
+					
 				}
 			}
 		}
@@ -236,6 +270,7 @@
 		$dirArr = []; //initialize array
 		if (file_exists($fname)) {
 			$jsonDir = file_get_contents($fname);
+
 			if ($jsonDir) {
 				$dirArr = json_decode(strtolower($jsonDir), true);			
 			}
@@ -268,7 +303,7 @@
 		//build array of subdirectories containing index.php|html, $dirlist
 		$dir = getDirList();
 
-		//print_r($dir);
+		displayArray($dir);
 		//echo "i am here";
 
 		$dirlist = array_change_key_case($dir);
@@ -276,6 +311,8 @@
 		
 		//read json file containing currently visible directories/links into array $jsonarray
 		$jsonarray = getJsonDir($fname);
+		//$jsonarray = array_change_key_case($jsonarray);
+		//$jsonarray = array_map('strtolower', $jsonarray);
 
 		if (!($jsonarray)) {
 			$jsonarray = [];

@@ -40,6 +40,13 @@
 			//show description 
 			//if path show button to copy file path else show nothing
 			//include button for popup modal dialog
+			//echo "<br>" . $values['title'] . "<br>";
+
+			$projectTitle = isset($values['title']) && ($values['title'] !== '') ? ucwords($values['title']) : $project;
+			$projectDesc = isset($values['desc']) && ($values['desc'] !== '') ? sentenceCase($values['desc']) : 'No Description';
+			$titleId = 'title-' . $values['id'];
+			$descId = 'desc-' . $values['id'];
+
 			
 			//-- start panel item			
 			$panelItem .= '<div class="panel panel-info">';
@@ -47,8 +54,8 @@
 			// panel headings
 			$panelItem .= "<div class=\"panel-heading\">
 									<h4 class=\"panel-title\">
-										<a class=\"item-heading collapsed\" data-toggle=\"collapse\" data-parent=\"#$id\" href=\"#collapse$id$count\">
-										          $project		          
+										<a class=\"item-heading collapsed\" data-toggle=\"collapse\" data-parent=\"#$id\" href=\"#collapse$id$count\" id=\"$titleId\">
+										          $projectTitle		          
 										</a>
 										
 									</h4>
@@ -61,22 +68,22 @@
    		 
    		}
    		// panel collapse item
-			$panelItem .= "<div id=\"collapse$id$count\" class=\"panel-collapse collapse\">";
+			$panelItem .= "<div id=\"collapse$id$count\" class=\"panel-collapse collapse\" data-proj-id=\"$values[id]\">";
 
 			//panel body
 			$panelItem .= "<div class=\"panel-body\">											   
 								   <a class=\"list-group-item-text proj-link\" href=\"$values[url]\" $target>$values[url]</a>
-								   <a class=\"btn btn-info btn-xs pull-right proj-link\" href=\"$values[url]\"><span class=\"glyphicon glyphicon-new-window\"></span> Go</a>
+								   <a class=\"btn btn-info btn-xs pull-right proj-link\" href=\"$values[url]\" $target><span class=\"glyphicon glyphicon-new-window\"></span> Go</a>
 									<div class=\"clearfix\"></div>
 									<hr class=\"proj-rule\">
-									<p class=\"proj-description\"> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+									<p class=\"proj-description\" id=\"$descId\"> $projectDesc
 									</p>
 								</div>";
 			//end panel body
 
 			//panel footer
 			$panelItem .= "<div class=\"panel-footer proj-footer clearfix\">
-									<a class=\"btn btn-warning btn-sm proj-link pull-left\" href=\"#\" title=\"Edit description\"><span class=\"glyphicon glyphicon-edit\"></span> Edit</a>
+									<a class=\"btn btn-warning btn-sm btn-edit-desc pull-left\" href=\"#\" title=\"Edit description\" data-proj-id=\"$values[id]\"><span class=\"glyphicon glyphicon-edit\"></span> Edit</a>
 									<a class=\"btn btn-primary btn-sm btn-copy pull-right\" href=\"#\" title=\"$values[path]\" data-path=\"$values[path]\" data-toggle=\"tooltip\"><span class=\"glyphicon glyphicon-copy\"></span> Copy</a>
 								</div>";
 

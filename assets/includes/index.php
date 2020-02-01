@@ -19,7 +19,7 @@
 	}
 	//if the json file does not exist create and populate it
 	if (!(file_exists(JSON_FILE))) {		
-		//echo "json file not found";		
+		echo "json file not found";		
 		updateJsonFile(JSON_FILE);
 	}
 	
@@ -27,13 +27,13 @@
 	//build links to each app directory from json file
 	
 	//store array of projects and subprojects as SESSION variable
-	if (!(isset($_SESSION['projectsArray']))) {
-		
-		//get project directories from JSON file	
-		$_SESSION['projectsArray'] = getJsonDir(JSON_FILE);
-	}
+	
+	//get project directories from JSON file	
+	$_SESSION['projectsArray'] = getJsonDir(JSON_FILE);
+	
 	
 	$projectsArray = $_SESSION['projectsArray'];
+	//displayArray($projectsArray);
 
 	//decode route
 	$projDirs = decodeRoute();
@@ -62,7 +62,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title><?php echo $pageTitle; ?></title>
+		<title><?php echo $pageTitle ?></title>
 
 		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="http://appdev.local/assets/css/bootstrap.css">
@@ -83,7 +83,7 @@
 			
 			<div class="row">				
 				<div class="col-md-6 col-md-offset-3">
-					<form method="post" action="<?php echo URI_BASE; ?>">
+					<form id="form-refresh" method="post" action="<?php echo URI_BASE; ?>" data-json-file="<?php echo JSON_FILE; ?>">
 						<h1><?php echo $pageHeader; ?> <span id="refresh"><button>Refresh Dirs</button></span></h1>	
 						<input type="hidden" name="rebuild" value="yes">
 					</form>
@@ -97,6 +97,8 @@
 				<?php 
 					//get number of columns
 					if (!empty($projDirs)) {
+						//displayArray($projDirs);
+
 						$chkProjects = array_chunk($projDirs, MAX_ROWS, true);
 
 						$numcols = count($chkProjects); //use this later for paging
@@ -124,6 +126,7 @@
 					?>			
 				</div>						
 			</div>
+			<div id="modaldlg"></div>
 		</div> <!-- end container-fluid -->
 		
 		

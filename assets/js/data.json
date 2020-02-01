@@ -22,5 +22,11 @@
 		"description": "Vanilla JS Apps",
 		"url": "http://jsdev.local",
 		"icon": "assets/images/javascript.png"
+	},
+	"Ionic 1": {
+		"path": "/ionic",
+		"description": "Ionic 1 Mobile Apps",
+		"url": "http://ionicdev.local",
+		"icon": "assets/images/ionic.png"
 	}
 }

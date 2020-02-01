@@ -44,7 +44,7 @@ body {
     content: "\e080";    /* adjust as needed, taken from bootstrap.css */
 }
 
-.proj-link, .btn-copy {
+.proj-link, .btn-copy, .btn-edit-desc {
   font-family: sans-serif;
 }
 
